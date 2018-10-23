@@ -1,0 +1,144 @@
+Index: releasenote.xsl
+===================================================================
+--- releasenote.xsl	(revision 878934)
++++ releasenote.xsl	(working copy)
+@@ -53,6 +53,7 @@
+ 		<li><a href="#content_5">Unsupport Features</a></li>
+ 		<li><a href="#content_6">Reverted Corrected Faults</a></li>
+ 		<li><a href="#content_7">changenotes</a></li>
++		<li><a href="#content_8">otherNotes</a></li>
+ 		<xsl:for-each select="additional/element">
+ 			<xsl:variable name="nr" select="position()+9" />
+ 			<li><a href="#content_{$nr}"><xsl:value-of select="@title" /></a></li>
+@@ -206,7 +207,7 @@
+ 	</xsl:if>
+ 	
+ 	<h2>7. changenotes</h2>
+-	<a name="content_6" />
++	<a name="content_7" />
+ 	<xsl:if test="changenotes/module">
+ 		<table border="1">
+ 			<tr>
+@@ -229,7 +230,29 @@
+ 		</table>
+ 	</xsl:if>	
+ 	
++	<h2>8. otherNotes</h2>
++	<a name="content_8" />
++	<xsl:if test="otherNotes/module">
++		<table border="1">
++			<tr>
++				<th>Module</th>
++				<th>Baseline</th>
++				<th>changes</th>
++			</tr>
++			<xsl:for-each select="otherNotes/module">
++				<xsl:if test="otherNote">
++						<xsl:for-each select="otherNote">
++							<tr>
++							  <td><xsl:value-of select="../@name" /></td>
++							  <td><xsl:value-of select="@id" /></td>
++							  <td><xsl:value-of select="." /></td>
+ 
++							</tr>
++						</xsl:for-each>
++					</xsl:if>
++			</xsl:for-each>
++		</table>
++	</xsl:if>
+ 	
+ 	<xsl:for-each select="additional/element">
+ 		<xsl:variable name="nr" select="position()+9" />
+Index: releasenote_base.py
+===================================================================
+--- releasenote_base.py	(revision 878980)
++++ releasenote_base.py	(working copy)
+@@ -41,6 +41,7 @@
+         self['from'] = ''
+         self['mdate'] = ''
+         self['importantNotes'] = ''
++        self['otherNotes'] = []
+         self.basedon = baseline
+ 
+         self.log.debug('parse %s' % sc)
+@@ -129,6 +130,7 @@
+         pronto_regex4 = re.compile(".*(PR[\s]*\d+)")
+         changenotes_reg = re.compile("[CR]N[\d:]*(.*)")
+         changenotes_reg2 = re.compile("changenotes:(.*)")
++        othernotes_reg = re.compile("\d+ lines?(.*)")
+         from_regex = re.compile(r'A ' + '(.*)' + ' \(from ([^:]+):(\d+)\)')
+ 
+         if 'promote' in baseline:
+@@ -166,38 +168,44 @@
+             pronto4 = pronto_regex4.search(line)
+             changenotes = changenotes_reg.search(line)
+             changenotes2  = changenotes_reg2.search(line)
++            othernotes = othernotes_reg.search(line)
+ 
+             if feature:
+                 items = feature.group(1).split(',')
+                 for item in items:
+                     self['features'].append(item)
+-            if feature2:
++            elif feature2:
+                 item = feature2.group(1)
+                 self['features'].append(item)
+ 
+-            if pronto:
++            elif pronto:
+                 items = pronto.group(1).split(',')
+                 for item in items:
+                     self['pronto'].append(item)
+-            if pronto2:
++            elif pronto2:
+                 item = pronto2.group(1)
+                 self['pronto'].append(item)
+-            if pronto3:
++            elif pronto3:
+                 item = pronto3.group(1)
+                 self['pronto'].append(item)
+-            if pronto4:
++            elif pronto4:
+                 item = pronto4.group(1).replace(' ','')
+                 self['pronto'].append(item)
+ 
+-            if changenotes :
++            elif changenotes:
+                 cn = changenotes.group(1).strip()
+                 if cn:
+                     self['changenotes'].append(cn)
+-            if changenotes2:
++            elif changenotes2:
+                 cn = changenotes2.group(1).strip()
+                 if cn:
+                     self['changenotes'].append(cn)
+ 
++            else:
++                on = othernotes.group(1).strip()
++                if on:
++                    self['otherNotes'].append(on)
++
+     def get_WFT_releasenote(self,tag_name):
+         result = shell_cmd('wget -t 3 https://wft.inside.nsn.com/ext/releasenote/'+tag_name +".xml -O " + tag_name+'.xml')
+         if  result:
+@@ -583,6 +591,12 @@
+                 for line in item['changenotes']:
+                     self.add_node(module, 'changenote',line, {'id':end_config[item['name']]})
+ 
++            if item['otherNotes']:
++                module = self.add_node(self.otherNotes, 'module', '',{'name':item['name']})
++                item['otherNotes'] = list(set(item['otherNotes']))
++                for line in item['otherNotes']:
++                    self.add_node(module, 'otherNote', line, {'id':end_config[item['name']]})
++
+             if item['features']:
+                 module = self.add_node(self.features, 'module', '',{'name':item['name']})
+                 item['features'] = list(set(item['features']))
+@@ -703,6 +717,7 @@
+         self.features = self.add_node(self.root, 'features')
+         self.baselines = self.add_node(self.root, 'baselines')
+         self.changenotes = self.add_node(self.root, 'changenotes')
++        self.otherNotes = self.add_node(self.root, 'otherNotes')
+         self.unsupport_feature = self.add_node(self.root, 'unsupportedFeatures')
+         self.download = self.add_node(self.root, 'download')
+         self.importantNotes = self.add_node(self.root, 'importantNotes')

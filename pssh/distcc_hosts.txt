@@ -1,0 +1,7 @@
+euca-10-133-143-184.eucalyptus.escloc60.eecloud.nsn-net.net root
+10.133.138.68 root
+10.133.139.140 root
+10.133.137.54 root
+euca-10-133-142-30.eucalyptus.escloc60.eecloud.nsn-net.net root
+euca-10-133-141-21.eucalyptus.escloc60.eecloud.nsn-net.net root
+euca-10-133-143-59.eucalyptus.escloc60.eecloud.nsn-net.net root

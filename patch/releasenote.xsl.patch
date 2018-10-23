@@ -1,0 +1,51 @@
+Index: releasenote.xsl
+===================================================================
+--- releasenote.xsl	(revision 878934)
++++ releasenote.xsl	(working copy)
+@@ -53,6 +53,7 @@
+ 		<li><a href="#content_5">Unsupport Features</a></li>
+ 		<li><a href="#content_6">Reverted Corrected Faults</a></li>
+ 		<li><a href="#content_7">changenotes</a></li>
++		<li><a href="#content_8">otherNotes</a></li>
+ 		<xsl:for-each select="additional/element">
+ 			<xsl:variable name="nr" select="position()+9" />
+ 			<li><a href="#content_{$nr}"><xsl:value-of select="@title" /></a></li>
+@@ -206,7 +207,7 @@
+ 	</xsl:if>
+ 	
+ 	<h2>7. changenotes</h2>
+-	<a name="content_6" />
++	<a name="content_7" />
+ 	<xsl:if test="changenotes/module">
+ 		<table border="1">
+ 			<tr>
+@@ -229,7 +230,29 @@
+ 		</table>
+ 	</xsl:if>	
+ 	
++	<h2>8. otherNotes</h2>
++	<a name="content_8" />
++	<xsl:if test="otherNotes/module">
++		<table border="1">
++			<tr>
++				<th>Module</th>
++				<th>Baseline</th>
++				<th>changes</th>
++			</tr>
++			<xsl:for-each select="otherNotes/module">
++				<xsl:if test="otherNote">
++						<xsl:for-each select="otherNote">
++							<tr>
++							  <td><xsl:value-of select="../@name" /></td>
++							  <td><xsl:value-of select="@id" /></td>
++							  <td><xsl:value-of select="." /></td>
+ 
++							</tr>
++						</xsl:for-each>
++					</xsl:if>
++			</xsl:for-each>
++		</table>
++	</xsl:if>
+ 	
+ 	<xsl:for-each select="additional/element">
+ 		<xsl:variable name="nr" select="position()+9" />

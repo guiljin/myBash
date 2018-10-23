@@ -1,0 +1,13 @@
+hzbtsscm.china.nsn-net.net root
+hzlinea09.china.nsn-net.net root
+
+#hzlinea01.china.nsn-net.net root #offline
+#hzlinea02.china.nsn-net.net root #windows
+hzlinea03.china.nsn-net.net root
+hzlinea04.china.nsn-net.net root
+hzlinea05.china.nsn-net.net root
+#hzlinea06.china.nsn-net.net root #online, no ssh
+#hzlinea07.china.nsn-net.net root #offline
+hzlinea08.china.nsn-net.net root
+hzlinea10.china.nsn-net.net root
+#hzwinea01.china.nsn-net.net root #windows 10.159.194.38

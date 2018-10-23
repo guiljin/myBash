@@ -2,7 +2,7 @@
 
 # Get the aliases and functions
 if [ -f ~/.bashrc ]; then
-	. ~/.bashrc
+    . ~/.bashrc
 fi
 
 if [ -f ~/.git-completion.bash ]; then
@@ -37,7 +37,7 @@ alias svnclean='svn st . | egrep "^\?" | cut -d\? -f2 | xargs rm -rf \{}'
 alias svnpe='svn pe svn:externals '
 alias svnpg='svn pg svn:externals '
 
-svnld(){
+function svnld(){
 [ -n "$1" ] && url=$1 || url=$V
 [ -n "$url" ] && svn log -l1 --diff $url | colordiff
 }
@@ -69,7 +69,7 @@ BRANCHS=(   BTS_SC_DSP/branches/FZP_Trunk/                  #WZ9.1_0000
             BTS_SC_DSP/branches/WN9.1r3_1407_PD4/
             BTS_SC_DSP/branches/WN8.0_1308/                 #WN8.0_1308
             BTS_SC_DSP/branches/development/psi_1308r3/
-            BTS_SC_DSP_LRC_DCM/Sourcecode_LRC/Trunk/
+            BTS_SC_DSP_LRC_DCM/Sourcecode_LRC/Trunk/    
         )
 
 commitKey(){
@@ -97,7 +97,7 @@ do
     esac
 done
 }
-
+    
 
 branchrun(){
 select branch in ${BRANCHS[*]}
@@ -153,25 +153,25 @@ done
 }
 
 suh(){
-	mpwd=$PWD
-	expect -c '
-	spawn su -l hzbtsscm_c_cn
-	expect "Password:"
-	send "8f2c2b5d\r"
+    mpwd=$PWD
+    expect -c '
+    spawn su -l hzbtsscm_c_cn
+    expect "Password:"
+    send "8f2c2b5d\r"
     send ". /home/guiljin/.bash_profile\r"
-	send "cd '${mpwd}'\r"
-	interact'
+    send "cd '${mpwd}'\r"
+    interact'
 }
 
 suca(){
-	expect -c '
-	spawn su -l ca_hzcbtsscm
-	expect "Password:"
-	send "hzcbtsscm123\r"
+    expect -c '
+    spawn su -l ca_hzcbtsscm
+    expect "Password:"
+    send "hzcbtsscm123\r"
     expect "*\$ "
     send ". /home/guiljin/.bash_profile\r"
-	send "cd /build/rcp\r"
-	interact'
+    send "cd /build/rcp\r"
+    interact'
 }
 
 
@@ -262,13 +262,3 @@ function _svn(){
 }
 complete -F _svn svn
 
-g() {
-    grep -Ir \
-         --exclude-dir=.git \
-         --exclude-dir='build*' \
-         --include='*.bb*' \
-         --include='*.inc*' \
-         --include='*.conf*' \
-         --include='*.py*' \
-         "$@"
-}
