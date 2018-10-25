@@ -20,7 +20,7 @@ export PS1="\[\e[35;1m\][\A \u@\h \W]\$\[\e[0m\]"
 source /home/guiljin/scripts/functions.sh
 source /home/hzbtsscm_c_cn/ENV/SCM_ENV
 export SVN_EDITOR=vim
-export GREP_OPTIONS='--color=auto --exclude-dir=".svn"'
+export GREP_OPTIONS='--color=auto'
 export http_proxy=http://10.144.1.10:8080/
 export https_proxy=https://10.144.1.10:8080/
 export HISTSIZE=10000
