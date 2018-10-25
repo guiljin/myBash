@@ -15,7 +15,7 @@ fi
 PATH=$PATH:$HOME/usr/colordiff-1.0.18/usr/local/bin:$HOME/pssh-1.4.3/bin
 
 export PATH
-export PS1="\[\e[35;1m\][\u@\h \W]\$\[\e[0m\]"
+export PS1="\[\e[35;1m\][\A \u@\h \W]\$\[\e[0m\]"
 
 source /home/guiljin/scripts/functions.sh
 source /home/hzbtsscm_c_cn/ENV/SCM_ENV
@@ -29,28 +29,75 @@ export PYTHONSTARTUP=/home/guiljin/.pythonstartup
 export AWS_ACCESS_KEY_ID=OSHA06WDOCOU0D_IP_V_
 export AWS_SECRET_ACCESS_KEY=grx7Zw4HzMgsYmjlBilFZ1ZS2ztFwNxGFLNfvw==
 
-
-
 alias h='history 20'
 alias cdh='cd /var/fpwork/guiljin'
-alias svnclean='svn st . | egrep "^\?" | cut -d\? -f2 | xargs rm -rf \{}'
-alias svnpe='svn pe svn:externals '
-alias svnpg='svn pg svn:externals '
+alias svn_clean='svn st . | egrep "^\?" | cut -d\? -f2 | xargs rm -rf \{}'
+alias svn_pe='svn pe svn:externals '
+alias svn_pg='svn pg svn:externals '
 
-function svnld(){
-[ -n "$1" ] && url=$1 || url=$V
-[ -n "$url" ] && svn log -l1 --diff $url | colordiff
+txtblk='\e[0;30m' # Black - Regular
+txtred='\e[0;31m' # Red
+txtgrn='\e[0;32m' # Green
+txtylw='\e[0;33m' # Yellow
+txtblu='\e[0;34m' # Blue
+txtpur='\e[0;35m' # Purple
+txtcyn='\e[0;36m' # Cyan
+txtwht='\e[0;37m' # White
+bldblk='\e[1;30m' # Black - Bold
+bldred='\e[1;31m' # Red
+bldgrn='\e[1;32m' # Green
+bldylw='\e[1;33m' # Yellow
+bldblu='\e[1;34m' # Blue
+bldpur='\e[1;35m' # Purple
+bldcyn='\e[1;36m' # Cyan
+bldwht='\e[1;37m' # White
+unkblk='\e[4;30m' # Black - Underline
+undred='\e[4;31m' # Red
+undgrn='\e[4;32m' # Green
+undylw='\e[4;33m' # Yellow
+undblu='\e[4;34m' # Blue
+undpur='\e[4;35m' # Purple
+undcyn='\e[4;36m' # Cyan
+undwht='\e[4;37m' # White
+bakblk='\e[40m'   # Black - Background
+bakred='\e[41m'   # Red
+bakgrn='\e[42m'   # Green
+bakylw='\e[43m'   # Yellow
+bakblu='\e[44m'   # Blue
+bakpur='\e[45m'   # Purple
+bakcyn='\e[46m'   # Cyan
+bakwht='\e[47m'   # White
+txtrst='\e[0m'    # Text Rese
+
+svn_ls(){
+V=${1/*isource/https://svne1.access.nsn.com/isource}
+V=${V%/}
+svn info $V &>/dev/null
+if [ "$?" -ne 0 ]; then
+    echo -e "$bakred[ERROR]: invalid svn url $txtrst"
+    unset V
+    return
+fi
+echo -e "$txtred${V/*isource/https://svne1.access.nsn.com/isource}"
+echo -e "$txtgrn${V/*isource/https://beisop60.china.nsn-net.net/isource}"
+echo -e "$txtylw${V/*isource/https://wrscmi.inside.nsn.com/isource}$txtrst"
+svn ls -v $V
 }
 
-svnls(){
-export V=${1/*isource/https://svne1.access.nsn.com/isource}
+svn_stop_on_copy(){
+[ -z "$V" ] && echo -e "${bakred}[ERROR]: run svn_ls first ${txtrst}" && return
+[[ "$V" != *tag* ]] && echo -e "${bakred}[ERROR]: not a tag branch ${txtrst}" && return
+from_line=$(svn log -v --stop-on-copy $V | sed -n '4p')
+tag=$(echo $from_line | cut -d' ' -f2)
+[ -n "$1" ] && suffix="/$1" || suffix=${V/*$tag/}
+branch_raw=$(echo $from_line | cut -d' ' -f4 | tr -d ')')
+branch=$(echo $branch_raw | cut -d: -f1)
+revision=$(echo $branch_raw | cut -d: -f2)
 echo
-echo -e "\033[31;1m${1/*isource/https://svne1.access.nsn.com/isource}"
-echo -e "\033[32;1m${1/*isource/https://beisop60.china.nsn-net.net/isource}"
-echo -e "\033[33;1m${1/*isource/https://wrscmi.inside.nsn.com/isource}\033[0m"
+echo -e "${V/$tag/}${txtgrn}$tag${txtrst}$suffix"
+echo -e "${V/$tag/}${txtylw}$branch${txtrst}$suffix${txtylw}@$revision"
 echo
 }
-
 
 SVNROOT=https://svne1.access.nsn.com/isource/svnroot/
 SVNPARAMS=' --no-auth-cache --non-interactive --trust-server-cert --username hzbtsscm_c_cn --password 8f2c2b5d'
@@ -69,7 +116,7 @@ BRANCHS=(   BTS_SC_DSP/branches/FZP_Trunk/                  #WZ9.1_0000
             BTS_SC_DSP/branches/WN9.1r3_1407_PD4/
             BTS_SC_DSP/branches/WN8.0_1308/                 #WN8.0_1308
             BTS_SC_DSP/branches/development/psi_1308r3/
-            BTS_SC_DSP_LRC_DCM/Sourcecode_LRC/Trunk/    
+            BTS_SC_DSP_LRC_DCM/Sourcecode_LRC/Trunk/
         )
 
 commitKey(){
@@ -97,7 +144,6 @@ do
     esac
 done
 }
-    
 
 branchrun(){
 select branch in ${BRANCHS[*]}
@@ -139,7 +185,6 @@ svn pl --revprop -r0 https://svne1.access.nsn.com/isource/svnroot/BTS_SC_DSP
 svn pg svn:dsp_all_lock_hook --revprop -r0 https://svne1.access.nsn.com/isource/svnroot/BTS_SC_DSP
 }
 
-
 svnexternals(){
 select branch in ${BRANCHS[*]}
 do
@@ -173,8 +218,6 @@ suca(){
     send "cd /build/rcp\r"
     interact'
 }
-
-
 
 function _left_choice(){
 used_params=$1
@@ -261,4 +304,3 @@ function _svn(){
     esac
 }
 complete -F _svn svn
-
