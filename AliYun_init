@@ -1,0 +1,60 @@
+# Install in CentOS
+
+echo 'export PS1="\[\e[35;1m\][\A \u@\h \W]\$\[\e[0m\]"' >> /root/.bash_profile
+
+yum remove docker \
+docker-client \
+docker-client-latest \
+docker-common \
+docker-latest \
+docker-latest-logrotate \
+docker-logrotate \
+docker-selinux \
+docker-engine-selinux \
+docker-engine
+
+yum install -y yum-utils \
+device-mapper-persistent-data \
+lvm2
+
+# docker yum repo
+yum-config-manager \
+--add-repo \
+https://mirrors.ustc.edu.cn/docker-ce/linux/centos/docker-ce.repo
+
+
+curl -fsSL get.docker.com -o get-docker.sh
+sh get-docker.sh --mirror Aliyun
+
+systemctl enable docker
+systemctl start docker
+
+# test docker
+docker run hello-world
+
+# repo mirror
+tee /etc/docker/daemon.json <<-'EOF'
+{
+  "registry-mirrors": ["https://qe2vinnb.mirror.aliyuncs.com"]
+}
+EOF
+systemctl daemon-reload
+systemctl restart docker
+
+yum install -y mlocate
+updatedb
+
+# auto completion
+yum install -y bash-completion
+sh /usr/share/bash-completion/bash_completion
+source /usr/share/bash-completion/completions/docker
+
+docker run \
+  -u root \
+  --rm \
+  -d \
+  -p 8080:8080 \
+  -p 50000:50000 \
+  -v /root/jenkins-data:/var/jenkins_home \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  jenkinsci/blueocean
