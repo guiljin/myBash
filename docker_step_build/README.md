@@ -15,7 +15,7 @@
 
 单个dockerfile
 ---
->Dockerfile.one里面有两个FROM  
+>Dockerfile里面有两个FROM  
 COPY支持从前一个镜像或任意镜像拷贝文件
 
 `docker build -t go/helloworld:3 .`
