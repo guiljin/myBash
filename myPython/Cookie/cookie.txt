@@ -1,5 +1,0 @@
-# Netscape HTTP Cookie File
-# http://curl.haxx.se/rfc/cookie_spec.html
-# This is a generated file!  Do not edit.
-
-proxy3.zju88.net	FALSE	/	FALSE		JSESSIONID	B18040E60D23EA0747F513CD7E5588DA.node1
