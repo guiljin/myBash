@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: centos-svc
+  namespace: jgl
+spec:
+  ports:
+    - name: centos-svc
+      port: 22
+      targetPort: 22
+      nodePort: 38092
+  selector:
+    app: centos-ssh
+  type: NodePort

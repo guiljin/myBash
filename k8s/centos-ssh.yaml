@@ -1,0 +1,21 @@
+kind: ReplicationController
+apiVersion: v1
+metadata:
+  name: centos-ssh
+  namespace: jgl
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: centos-ssh
+    spec:
+      containers:
+        - name: centos-ssh
+          image: kinogmt/centos-ssh
+          ports:
+            - containerPort: 22
+              hostPort: 65533
+              protocol: TCP
+          command: ["/usr/sbin/sshd","-D"]
+# root:password

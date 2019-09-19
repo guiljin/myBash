@@ -30,7 +30,10 @@ export AWS_ACCESS_KEY_ID=OSHA06WDOCOU0D_IP_V_
 export AWS_SECRET_ACCESS_KEY=grx7Zw4HzMgsYmjlBilFZ1ZS2ztFwNxGFLNfvw==
 
 alias h='history 20'
+alias ll='ls -trl'
+alias la='ls -Al'
 alias cdh='cd /var/fpwork/guiljin'
+alias mark='grep -C 10000'
 alias svn_clean='svn st . | egrep "^\?" | cut -d\? -f2 | xargs rm -rf \{}'
 alias svn_pe='svn pe svn:externals '
 alias svn_pg='svn pg svn:externals '
