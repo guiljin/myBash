@@ -1,7 +1,8 @@
 FROM ubuntu:18.04
 RUN sed -i "s@\(.*http://\)[^/]*\(.*\)@\1mirror.sy\2@" /etc/apt/sources.list && \
     apt update && \
-    apt install -y net-tools iputils-ping nginx curl vim keepalived rsyslog
+    apt install -y net-tools iputils-ping nginx curl vim keepalived rsyslog && \
+    rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 COPY . .
 RUN chmod -x * && \
