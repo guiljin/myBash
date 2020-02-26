@@ -1,0 +1,13 @@
+[color]
+	ui = true
+[alias]
+    ci = commit
+    co = checkout
+    lol = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --date=relative
+    lola = !git lol --all && 0
+	lg = log --graph --oneline --decorate
+	lga = log --graph --oneline --decorate --all
+    st = status -sb
+[user]
+	email = 03jsjjgl@sohu.com
+	name = guiljin

@@ -1,5 +1,5 @@
-kind: ReplicationController
-apiVersion: v1
+kind: ReplicaSet
+apiVersion: extensions/v1beta1
 metadata:
   name: centos-ssh
   namespace: jgl
@@ -12,7 +12,7 @@ spec:
     spec:
       containers:
         - name: centos-ssh
-          image: kinogmt/centos-ssh
+          image: guiljin/ssh:centos7
           ports:
             - containerPort: 22
               hostPort: 65533

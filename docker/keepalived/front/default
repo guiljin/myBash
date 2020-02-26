@@ -1,0 +1,7 @@
+server {
+  listen 80;
+  server_name  keepalived.front;
+  location  / {
+    proxy_pass  http://172.17.0.100:80/;
+  }
+}
