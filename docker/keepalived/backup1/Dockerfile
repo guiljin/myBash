@@ -13,4 +13,4 @@ RUN cp index.html /var/www/html/index.nginx-debian.html && \
 CMD service rsyslog start && \
     service nginx start && \
     service keepalived start && \
-    bash
+    tail -f /var/log/syslog | grep Keep
